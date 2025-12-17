@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://habits-wellness-tracker.vercel.app/sitemap.xml
