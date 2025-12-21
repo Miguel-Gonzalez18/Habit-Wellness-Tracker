@@ -1,4 +1,4 @@
-import { User, Settings, Calendar, Award, History, TrendingUp, Flame, Target } from 'lucide-react';
+import { User, Settings, Calendar, Award, History, TrendingUp, Flame, Target, LogOut } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
@@ -7,6 +7,10 @@ import { Separator } from './ui/separator';
 import { ScrollArea } from './ui/scroll-area';
 import { StatsCard } from './StatsCard';
 import type { User as UserType, ActivityLog } from '@/types';
+
+interface ProfileViewProps {
+  onLogout?: () => void;
+}
 
 /**
  * Mock Data for the user profile
@@ -39,7 +43,7 @@ const MOCK_HISTORY: ActivityLog[] = [
  * 
  * @returns {JSX.Element} The rendered profile view
  */
-export function ProfileView() {
+export function ProfileView({ onLogout }: ProfileViewProps) {
   return (
     <div className="space-y-8">
       {/* Header Section */}
@@ -67,10 +71,18 @@ export function ProfileView() {
                 </span>
               </div>
             </div>
-            <Button variant="outline" className="gap-2">
-              <Settings className="w-4 h-4" />
-              Edit Profile
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button variant="outline" className="gap-2">
+                <Settings className="w-4 h-4" />
+                Edit Profile
+              </Button>
+              {onLogout && (
+                <Button variant="outline" className="gap-2 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={onLogout}>
+                  <LogOut className="w-4 h-4" />
+                  Cerrar Sesión
+                </Button>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

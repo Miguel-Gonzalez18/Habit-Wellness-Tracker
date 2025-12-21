@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigation } from './components/Navigation';
 import { HabitCard } from './components/HabitCard';
 import { StatsCard } from './components/StatsCard';
@@ -6,6 +6,7 @@ import { HabitDialog } from './components/HabitDialog';
 import { StatsView } from './components/StatsView';
 import { AchievementsView } from './components/AchievementsView';
 import { ProfileView } from './components/ProfileView';
+import { AuthView } from './components/auth/AuthView';
 import { Button } from './components/ui/button';
 import { Plus, Target, Flame, Trophy, Calendar, User, TrendingUp, Search, Filter } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
@@ -14,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Habit } from '@/types';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
@@ -26,6 +28,33 @@ function App() {
     { id: '4', name: 'Beber 2L de agua', icon: '💧', completed: true, streak: 15, frequency: 'daily', reminderTime: '09:00' },
     { id: '5', name: 'Dormir 8 horas', icon: '😴', completed: false, streak: 3, frequency: 'daily', reminderTime: '22:00' },
   ]);
+
+  useEffect(() => {
+    const user = localStorage.getItem('currentUser');
+    if (user) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    setActiveTab('dashboard');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    setIsAuthenticated(false);
+    toast.info('Sesión cerrada correctamente');
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <AuthView onLogin={handleLogin} />
+        <Toaster position="top-center" richColors />
+      </>
+    );
+  }
 
   const handleToggleHabit = (id: string) => {
     setHabits(habits.map(habit => 
@@ -383,7 +412,7 @@ function App() {
         )}
 
         {activeTab === 'profile' && (
-          <ProfileView />
+          <ProfileView onLogout={handleLogout} />
         )}
       </main>
 
